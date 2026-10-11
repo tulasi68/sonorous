@@ -1,0 +1,13 @@
+{
+  "name": "Sonorous — Live Conversation Captions",
+  "short_name": "Sonorous",
+  "description": "A simple live caption and reply companion for everyday conversations.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f7fa",
+  "theme_color": "#102a43",
+  "icons": [
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
