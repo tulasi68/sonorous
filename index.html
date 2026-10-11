@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102a43">
+  <meta name="description" content="Sonorous helps you follow conversations with live captions and large readable text.">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <title>Sonorous — Live conversation captions</title>
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <div class="brand-mark" aria-hidden="true">S</div>
+      <div><h1>Sonorous</h1><p class="tagline">Follow the conversation.</p></div>
+    </header>
+
+    <section class="notice" aria-label="Important information">
+      <strong>Conversation companion</strong>
+      <p>Keep your phone nearby and let Sonorous turn speech into text. Please let people know when you are using a microphone.</p>
+    </section>
+
+    <section class="controls" aria-label="Caption controls">
+      <label for="language">Speech language</label>
+      <select id="language">
+        <option value="en-IN">English (India)</option>
+        <option value="hi-IN">Hindi</option>
+        <option value="kn-IN">Kannada</option>
+        <option value="te-IN">Telugu</option>
+        <option value="ta-IN">Tamil</option>
+        <option value="ml-IN">Malayalam</option>
+        <option value="en-US">English (US)</option>
+      </select>
+      <div class="button-row">
+        <button id="startBtn" class="primary">▶ Start captions</button>
+        <button id="stopBtn" class="secondary" disabled>■ Stop</button>
+      </div>
+      <p id="status" class="status" role="status" aria-live="polite">Ready when you are.</p>
+    </section>
+
+    <section class="caption-card" aria-labelledby="captionHeading">
+      <div class="caption-head">
+        <h2 id="captionHeading">Live conversation</h2>
+        <div class="text-controls">
+          <button id="smallerBtn" aria-label="Decrease text size" title="Smaller text">A−</button>
+          <button id="largerBtn" aria-label="Increase text size" title="Larger text">A+</button>
+        </div>
+      </div>
+      <div id="captions" class="captions" aria-live="polite" aria-relevant="additions text">
+        <p class="placeholder">Your captions will appear here. Tap <b>Start captions</b> to begin.</p>
+      </div>
+      <div class="button-row lower">
+        <button id="holdBtn" class="secondary" disabled>Ⅱ Hold text</button>
+        <button id="clearBtn" class="secondary">Clear text</button>
+      </div>
+    </section>
+
+    <section class="reply-card" aria-labelledby="replyHeading">
+      <h2 id="replyHeading">Your reply</h2>
+      <p>Type a response and show it to the person you are speaking with.</p>
+      <textarea id="replyInput" rows="3" placeholder="Type your reply here…"></textarea>
+      <div class="button-row">
+        <button id="showReplyBtn" class="primary">Show large reply</button>
+        <button id="speakReplyBtn" class="secondary">🔊 Speak reply</button>
+      </div>
+      <div id="replyDisplay" class="reply-display" hidden></div>
+    </section>
+
+    <footer>
+      <p><strong>Privacy & limitations:</strong> Microphone access starts only after you tap Start. Depending on your browser, speech recognition may process audio through an online service. Do not use this prototype for confidential conversations. Captions can be wrong or miss words, especially in noisy places; confirm important details.</p>
+      <p>Sonorous is an accessibility aid, not a medical device or a replacement for hearing aids or other support.</p>
+    </footer>
+  </main>
+  <script src="./app.js" defer></script>
+</body>
+</html>
