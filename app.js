@@ -3,7 +3,7 @@
   const startBtn = $("startBtn"), stopBtn = $("stopBtn"), status = $("status");
   const captions = $("captions"), language = $("language"), holdBtn = $("holdBtn");
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let recognition = null, listening = false, held = false, fontSize = 1.45;
+  let recognition = null, listening = false, shouldListen = false, held = false, fontSize = 1.45;
   let finalTranscript = "";
   const setStatus = (message) => { status.textContent = message; };
   const addLine = (text, className) => {
@@ -19,6 +19,8 @@
     if (placeholder) placeholder.remove();
   };
   function stopListening() {
+    // Only an explicit user stop ends the caption session.
+    shouldListen = false;
     listening = false;
     try { if (recognition) recognition.stop(); } catch (_) {}
     startBtn.disabled = false; stopBtn.disabled = true; holdBtn.disabled = true;
@@ -28,7 +30,8 @@
       setStatus("Live speech recognition is not supported in this browser. Try a current version of Chrome, or use your phone's Live Transcribe feature.");
       return;
     }
-    if (listening) return;
+    if (shouldListen || listening) return;
+    shouldListen = true;
     try {
       recognition = new SpeechRecognition();
       recognition.lang = language.value;
@@ -62,13 +65,35 @@
           "no-speech": "No speech detected yet. Try moving closer to the speaker."
         };
         setStatus(messages[event.error] || ("Speech recognition issue: " + event.error));
+        // Permission and microphone failures need the user to intervene.
+        if (["not-allowed", "service-not-allowed", "audio-capture"].includes(event.error)) {
+          shouldListen = false;
+        }
       };
       recognition.onend = () => {
-        listening = false; startBtn.disabled = false; stopBtn.disabled = true; holdBtn.disabled = true;
-        if (status.textContent.startsWith("Listening")) setStatus("Captions paused. Tap Start captions to continue.");
+        listening = false;
+        if (shouldListen) {
+          // Some browsers end recognition after a pause or a single utterance.
+          // Restart while the user's caption session remains active.
+          setStatus("Reconnecting to speech recognition…");
+          window.setTimeout(() => {
+            if (!shouldListen || !recognition) return;
+            try { recognition.start(); } catch (_) {
+              // The browser may still be closing the previous session.
+            }
+          }, 300);
+          return;
+        }
+        startBtn.disabled = false; stopBtn.disabled = true; holdBtn.disabled = true;
+        if (status.textContent.startsWith("Listening") || status.textContent.startsWith("Reconnecting")) {
+          setStatus("Captions stopped.");
+        }
       };
       recognition.start();
     } catch (error) {
+      shouldListen = false;
+      listening = false;
+      startBtn.disabled = false; stopBtn.disabled = true; holdBtn.disabled = true;
       setStatus("Could not start captions. Please try again and check microphone permission.");
     }
   }
